@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "330943285391",
+    "firebase_url": "https://bertha-login-db.firebaseio.com",
+    "project_id": "bertha-login-db",
+    "storage_bucket": "bertha-login-db.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:330943285391:android:4808034bc45716ef",
+        "android_client_info": {
+          "package_name": "com.example.bertha"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "330943285391-s15h68dmbciolg1jf88e8bdah37ah3it.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.bertha",
+            "certificate_hash": "4fc5a048068ec0f529f016331e439c886a661681"
+          }
+        },
+        {
+          "client_id": "330943285391-r4dhvj1m95john4l6tcrmhn0ct0cuqkr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSHfMqvKFW-ljorzRdGe8oVCHRXXLd_M0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "330943285391-r4dhvj1m95john4l6tcrmhn0ct0cuqkr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
