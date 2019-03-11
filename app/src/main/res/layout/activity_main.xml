@@ -7,8 +7,20 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <ListView
+        android:id="@+id/mainDataLV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></ListView>
+
     <Button
+        android:text="Logout"
         android:onClick="goToLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:text="Get data"
+        android:onClick="getData"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
