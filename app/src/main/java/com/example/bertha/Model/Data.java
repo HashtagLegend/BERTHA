@@ -2,46 +2,30 @@ package com.example.bertha.Model;
 
 public class Data {
 
-    private String deviceId;
-    private int pm25, pm10, co2, o3, pressure, temperature, humidity;
 
-    public Data(String deviceId, int pm25, int pm10, int co2, int o3, int pressure, int temperature, int humidity) {
+    private int deviceId, co2, o3,  humidity;
+    private double pm25, pm10, pressure, temperature;
+
+    public Data(int deviceId, int co2, int o3, int humidity, double pm25, double pm10, double pressure, double temperature) {
         this.deviceId = deviceId;
-        this.pm25 = pm25;
-        this.pm10 = pm10;
         this.co2 = co2;
         this.o3 = o3;
+        this.humidity = humidity;
+        this.pm25 = pm25;
+        this.pm10 = pm10;
         this.pressure = pressure;
         this.temperature = temperature;
-        this.humidity = humidity;
     }
 
-    public Data(){
-
+    public Data() {
     }
 
-    public String getDeviceId() {
+    public int getDeviceId() {
         return deviceId;
     }
 
-    public void setDeviceId(String deviceId) {
+    public void setDeviceId(int deviceId) {
         this.deviceId = deviceId;
-    }
-
-    public int getPm25() {
-        return pm25;
-    }
-
-    public void setPm25(int pm25) {
-        this.pm25 = pm25;
-    }
-
-    public int getPm10() {
-        return pm10;
-    }
-
-    public void setPm10(int pm10) {
-        this.pm10 = pm10;
     }
 
     public int getCo2() {
@@ -60,28 +44,44 @@ public class Data {
         this.o3 = o3;
     }
 
-    public int getPressure() {
-        return pressure;
-    }
-
-    public void setPressure(int pressure) {
-        this.pressure = pressure;
-    }
-
-    public int getTemperature() {
-        return temperature;
-    }
-
-    public void setTemperature(int temperature) {
-        this.temperature = temperature;
-    }
-
     public int getHumidity() {
         return humidity;
     }
 
     public void setHumidity(int humidity) {
         this.humidity = humidity;
+    }
+
+    public double getPm25() {
+        return pm25;
+    }
+
+    public void setPm25(double pm25) {
+        this.pm25 = pm25;
+    }
+
+    public double getPm10() {
+        return pm10;
+    }
+
+    public void setPm10(double pm10) {
+        this.pm10 = pm10;
+    }
+
+    public double getPressure() {
+        return pressure;
+    }
+
+    public void setPressure(double pressure) {
+        this.pressure = pressure;
+    }
+
+    public double getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(double temperature) {
+        this.temperature = temperature;
     }
 
     @Override

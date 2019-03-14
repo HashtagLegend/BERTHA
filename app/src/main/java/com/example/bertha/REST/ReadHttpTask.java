@@ -9,6 +9,7 @@ import java.io.IOException;
 public class ReadHttpTask extends AsyncTask<String, Void, CharSequence> {
     @Override
     protected CharSequence doInBackground(String... urls) {
+        Log.d("MINE", "doInBackground: got here");
         String urlString = urls[0];
         try {
             CharSequence result = HttpHelper.GetHttpResponse(urlString);
@@ -17,7 +18,7 @@ public class ReadHttpTask extends AsyncTask<String, Void, CharSequence> {
             cancel(true);
             String errorMessage = ex.getMessage() + "\n" + urlString;
             //TODO: Change tag to something meaningfull
-            Log.e("BOOK", errorMessage);
+            Log.e("MINE", errorMessage);
             return errorMessage;
         }
     }

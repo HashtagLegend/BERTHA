@@ -7,10 +7,10 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <ListView
-        android:id="@+id/mainDataLV"
+    <TextView
+        android:id="@+id/mainDataTv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></ListView>
+        android:layout_height="wrap_content"></TextView>
 
     <Button
         android:text="Logout"
@@ -20,7 +20,12 @@
 
     <Button
         android:text="Get data"
-        android:onClick="getData"
+        android:id="@+id/btnMainGetData"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/mainMessageTv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

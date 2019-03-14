@@ -9,15 +9,23 @@ import android.view.View;
 
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.bertha.Model.Data;
+import com.example.bertha.REST.PostHttpTask;
 import com.example.bertha.REST.ReadHttpTask;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,12 +33,21 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     public static final String MINE = "MINE";
-    public static final String urlWristbandData = "https://berthawristbandrestprovider.azurewebsites.net/api/wristbanddata/get.json";
+    public static final String urlWristbandData = "https://berthawristbandrestprovider.azurewebsites.net/api/wristbanddata/";
+    public static final String URLBooks = "http://anbo-restserviceproviderbooks.azurewebsites.net/Service1.svc/books";
+    private Button getDataButton;
+    private TextView mainMessageTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getDataButton = findViewById(R.id.btnMainGetData);
+
+        mainMessageTv = findViewById(R.id.mainMessageTv);
+
+
+
 
     }
 
@@ -44,76 +61,63 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
+        ReadFromWristbandTask readTask = new ReadFromWristbandTask();
+        readTask.execute(urlWristbandData);
     }
 
-    public void getData(View view) {
-        AsyncTask task = new AsyncTask() {
-            @Override
-            protected Object doInBackground(Object[] objects) {
-                Log.d(MINE, "doInBackground: clicked");
-                OkHttpClient client = new OkHttpClient();
-                Request request = new Request.Builder()
-                        .url(urlWristbandData)
-                        .build();
-                Response response = null;
-
-                try{
-                    response = client.newCall(request).execute();
-                    return response.body().string();
-                }
-                catch(IOException e){
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Object o) {
-                Log.d(MINE, "onPostExecute: " + o);
-            }
-        }.execute();
-
-    }
-
-    /*
     private class ReadFromWristbandTask extends ReadHttpTask {
-
-
-
         @Override
         protected void onPostExecute(CharSequence jsonString) {
             Log.d(MINE, "onPostExecute: called");
+
+            //---------------GSON Builder, not able to split string
+            /*
             Gson gson = new GsonBuilder().create();
+
             final Data data = gson.fromJson(jsonString.toString(), Data.class);
+            */
 
+            try{
+                JSONObject jsonObject = new JSONObject(jsonString.toString());
 
-            ListView list = findViewById(R.id.mainDataLV);
-            ArrayAdapter adapter = new ArrayAdapter<>(getBaseContext(), android.R.layout.simple_list_item_1, (List<Data>) data);
+                int deviceId = jsonObject.getInt("deviceId");
+                double pm25 = jsonObject.getDouble("pm25");
+                double pm10 = jsonObject.getDouble("pm10");
+                int co2 = jsonObject.getInt("co2");
+                int o3 = jsonObject.getInt("o3");
+                double pressure = jsonObject.getDouble("pressure");
+                double temperature = jsonObject.getDouble("temperature");
+                int humidity = jsonObject.getInt("humidity");
 
+                final Data data = new Data(deviceId, co2, o3, humidity, pm25, pm10, pressure, temperature);
 
-            list.setAdapter(adapter);
+                Log.d(MINE, "onPostExecute: " + data.toString());
+                TextView text = findViewById(R.id.mainDataTv);
+                text.setText(data.toString());
 
-            list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    //TODO: Create ArrayAdapter and create onItemClick method
-
-                Intent intent = new Intent(getBaseContext(), BookActivity.class);
-                Book book = (Book) parent.getItemAtPosition(position);
-                intent.putExtra(BookActivity.BOOK, book);
-                startActivity(intent);
-
-                }
-
-            });
-
-
-            Log.d(MINE, "onPostExecute: " + data.toString());
-
+            } catch (JSONException ex){
+                mainMessageTv.setText(ex.getMessage());
+                Log.d(MINE, "onPostExecute: " + ex.getMessage());
+            }
         }
-
     }
-    */
+
+    public void postDataToDb(){
+        try{
+            JSONObject jsonObject = new JSONObject();
+            //ToDo create json object
+
+
+
+            Log.d(MINE, "onPostExecute: ");
+
+
+        } catch (JSONException ex){
+            mainMessageTv.setText(ex.getMessage());
+            Log.d(MINE, "postDataToDb: " + ex.getMessage());
+        }
+    }
+
+
+
 }

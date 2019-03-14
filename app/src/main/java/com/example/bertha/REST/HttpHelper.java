@@ -24,11 +24,13 @@ public class HttpHelper {
             throw new IOException("Not an HTTP connection");
         }
         HttpURLConnection httpConnection = (HttpURLConnection) connection;
+
         int responseCode = httpConnection.getResponseCode();
         if (responseCode != HttpURLConnection.HTTP_OK) {
             String responseMessage = httpConnection.getResponseMessage();
             throw new IOException("HTTP response code: " + responseCode + " " + responseMessage);
         }
+
         InputStream inputStream = httpConnection.getInputStream();
         BufferedReader reader = null;
         try {
