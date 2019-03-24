@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Activities.MainActivity">
+    tools:context=".MainActivity">
 
     <TextView
         android:id="@+id/mainDataTv"
@@ -20,7 +20,7 @@
 
     <Button
         android:text="Get data"
-        android:id="@+id/btnMainGetData"
+        android:onClick="StartSendLoop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -36,11 +36,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <Button
-        android:onClick="goToSendShowAll"
-        android:text="Go to show all"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
 
 </LinearLayout>
