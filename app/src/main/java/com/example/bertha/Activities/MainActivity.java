@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(MINE, "latlong data: " + latitude + longitude);
     }
 
-    public void goToSendShowAll(View view) {
+    public void GoToShowAllData(View view) {
         Intent intent = new Intent(this, ShowAllDataActivity.class);
         startActivity(intent);
     }

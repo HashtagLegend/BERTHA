@@ -25,9 +25,8 @@
         android:layout_height="wrap_content" />
 
     <Button
-        android:text="Send data"
-        android:id="@+id/btnMainSendData"
-        android:onClick="SendDataToDBButtonPressed"
+        android:text="Go To Show All"
+        android:onClick="GoToShowAllData"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

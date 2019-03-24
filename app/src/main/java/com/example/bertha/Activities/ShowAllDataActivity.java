@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.bertha.Adapters.DataListItemAdapter;
 import com.example.bertha.Model.CombinedSendData;
 import com.example.bertha.R;
 import com.example.bertha.REST.ReadHttpTask;
@@ -46,8 +47,8 @@ public class ShowAllDataActivity extends AppCompatActivity {
             final CombinedSendData[] allData = gson.fromJson(jsonString.toString(), CombinedSendData[].class);
 
             ListView listView = findViewById(R.id.showAllDataListView);
-            ArrayAdapter<CombinedSendData> adapter = new ArrayAdapter<>(getBaseContext(), android.R.layout.simple_list_item_1, allData);
-            //BookListItemAdapter adapter = new BookListItemAdapter(getBaseContext(), R.layout.booklist_item, books);
+            //ArrayAdapter<CombinedSendData> adapter = new ArrayAdapter<>(getBaseContext(), android.R.layout.simple_list_item_1, allData);
+            DataListItemAdapter adapter = new DataListItemAdapter(getBaseContext(), R.layout.data_list_item, allData);
             listView.setAdapter(adapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
