@@ -86,6 +86,11 @@ public class MainActivity extends AppCompatActivity {
         Log.d(MINE, "latlong data: " + latitude + longitude);
     }
 
+    public void goToSendDataActivity(View view) {
+        Intent intent = new Intent(this, SendDataToDb.class);
+        startActivity(intent);
+    }
+
     private class ReadFromWristbandTask extends ReadHttpTask {
         @Override
         protected void onPostExecute(CharSequence jsonString) {

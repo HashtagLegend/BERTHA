@@ -5,42 +5,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".SendDataToDb">
 
     <TextView
-        android:id="@+id/mainDataTv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"></TextView>
-
-    <Button
-        android:text="Logout"
-        android:onClick="goToLogin"
+        android:id="@+id/sendDataActTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <Button
-        android:text="Get data"
-        android:id="@+id/btnMainGetData"
+        android:text="Get Data"
+        android:onClick="getData"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <Button
-        android:text="Send data"
-        android:id="@+id/btnMainSendData"
-        android:onClick="SendDataToDBButtonPressed"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/mainMessageTv"
+        android:text="Send Data"
+        android:onClick="sendData"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <Button
-        android:onClick="goToSendDataActivity"
-        android:text="Go to send data"
+        android:text="Go back"
+        android:onClick="goBackButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
 
 
 </LinearLayout>
