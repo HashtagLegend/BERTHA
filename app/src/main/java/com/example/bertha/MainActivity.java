@@ -24,13 +24,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String MINE = "MINE";
     public static final String urlWristbandData = "https://berthawristbandrestprovider.azurewebsites.net/api/wristbanddata/";
     public static final String postToDbUrl = "https://berthabackendrestprovider.azurewebsites.net/api/data/";
-    Button getDataButton;
     private TextView mainMessageTv;
 
     private CombinedSendData combinedDataNew, combinedDataNewTestPurpose;
@@ -53,15 +54,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getDataButton = findViewById(R.id.btnMainGetData);
         mainMessageTv = findViewById(R.id.mainMessageTv);
 
         //Testdata: used as long as tablet wont recieve data due to SSL error:
-        //TODO Uncomment this as well
-        // getLatLongMethod();
-        combinedDataNewTestPurpose = new CombinedSendData(1616384779, 10, 10, 10, 25, 10, 10, 10, new Date().getTime(), latitude, longitude, 2, "patr");
+        combinedDataNewTestPurpose = new CombinedSendData(1616384779, 10, 10, 10, 25, 10, 10, 10, new Date().getTime(), latitude, longitude, 2, "patr3");
 
+        //Commented out so it wont send data all the time
+        //doEvery10Seconds();
     }
+
+
 
     public void goToLogin(View view) {
         Intent intent = new Intent(this, LoginActivity.class);
@@ -71,14 +73,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ReadFromWristbandTask readTask = new ReadFromWristbandTask();
-        readTask.execute(urlWristbandData);
     }
 
     public void SendDataToDBButtonPressed(View view) {
         //ReadFromWristbandTask getData = new ReadFromWristbandTask();
         //getData.execute(urlWristbandData);
-        Log.d(MINE, "SendDataToDBButtonPressed: now we wait 5 secs");
         //TODO optimize this handler
         // (new Handler()).postDelayed(this::postDataToDb, 5000);
         postDataToDb();
@@ -86,16 +85,10 @@ public class MainActivity extends AppCompatActivity {
         Log.d(MINE, "latlong data: " + latitude + longitude);
     }
 
-    public void goToSendDataActivity(View view) {
-        Intent intent = new Intent(this, SendDataToDb.class);
-        startActivity(intent);
-    }
 
     private class ReadFromWristbandTask extends ReadHttpTask {
         @Override
         protected void onPostExecute(CharSequence jsonString) {
-            Log.d(MINE, "onPostExecute: called");
-
             try {
                 JSONObject jsonObject = new JSONObject(jsonString.toString());
 
@@ -108,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 temperature = jsonObject.getDouble("temperature");
                 humidity = jsonObject.getInt("humidity");
 
+                //ToDO: Check how many times getLatLong is called
                 getLatLongMethod();
 
             } catch (JSONException ex) {
@@ -121,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
         String userId = "patr";
         int noise = 2;
 
+        //ToDo: as soon as the device can receive data, uncomment this object, this will be the updated object every time data has to be sent
         //combinedDataNew = new CombinedSendData(deviceId, co2, o3, humidity, pm25, pm10, pressure, temperature, new Date().getTime(), latitude, longitude, noise, userId);
 
         //Converts object to json with gson
@@ -147,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         }
         Location location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         showLocation(location);
-        //TODO uncomment theese
+        //TODO: Theese make the emulator crash - only works on real device
         //longitude = location.getLongitude();
         //latitude = location.getLatitude();
 
@@ -163,16 +158,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void doEvery10Seconds(){
-        while(true){
-            (new Handler()).postDelayed(this::write1, 5000);
-        }
+
+        Timer t = new Timer( );
+        t.scheduleAtFixedRate(new TimerTask() {
+
+            @Override
+            public void run() {
+
+                ReadFromWristbandTask readTask = new ReadFromWristbandTask();
+                readTask.execute(urlWristbandData);
+                postDataToDb();
+
+            }
+        }, 1000,10000);
 
     }
-
-    public void write1(){
-        Log.d(MINE, "write: waited 5 seconds");
-    }
-
 
 
 }

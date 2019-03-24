@@ -20,7 +20,7 @@
 
     <Button
         android:text="Get data"
-        android:id="@+id/btnMainGetData"
+        android:onClick="StartSendLoop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -36,11 +36,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <Button
-        android:onClick="goToSendDataActivity"
-        android:text="Go to send data"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
 
 </LinearLayout>

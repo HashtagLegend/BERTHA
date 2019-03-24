@@ -1,4 +1,4 @@
-package com.example.bertha;
+package com.example.bertha.HelperClasses;
 
 import android.location.Location;
 import android.location.LocationListener;
