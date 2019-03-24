@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getDataButton = findViewById(R.id.btnMainGetData);
         mainMessageTv = findViewById(R.id.mainMessageTv);
 
         //Testdata: used as long as tablet wont recieve data due to SSL error:

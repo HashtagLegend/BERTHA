@@ -42,9 +42,6 @@ public class SendDataToDb extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_send_data_to_db);
-
-        sendDataTV = findViewById(R.id.sendDataActTV);
     }
 
 
