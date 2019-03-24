@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,8 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.bertha.Model.CombinedSendData;
-import com.example.bertha.Model.Data;
-import com.example.bertha.Model.SendData;
 import com.example.bertha.REST.PostHttpTask;
 import com.example.bertha.REST.ReadHttpTask;
 import com.google.gson.Gson;
@@ -26,21 +23,16 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String MINE = "MINE";
     public static final String urlWristbandData = "https://berthawristbandrestprovider.azurewebsites.net/api/wristbanddata/";
-    public static final String postToDbUrl = "https://berthabackendrestprovider.azurewebsites.net/api/data/patr/";
+    public static final String postToDbUrl = "https://berthabackendrestprovider.azurewebsites.net/api/data/";
     Button getDataButton;
     private TextView mainMessageTv;
 
-
-    private Data dataToSend;
-    private Data data2;
-    private SendData combinedData;
     private CombinedSendData combinedDataNew, combinedDataNewTestPurpose;
 
     private int deviceId;
@@ -64,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         getDataButton = findViewById(R.id.btnMainGetData);
         mainMessageTv = findViewById(R.id.mainMessageTv);
 
-        //Testdata: used as long as tablet wont recieve data do to SSL error:
+        //Testdata: used as long as tablet wont recieve data due to SSL error:
         //TODO Uncomment this as well
         // getLatLongMethod();
         combinedDataNewTestPurpose = new CombinedSendData(1616384779, 10, 10, 10, 25, 10, 10, 10, new Date().getTime(), latitude, longitude, 2, "patr");
@@ -74,8 +66,6 @@ public class MainActivity extends AppCompatActivity {
     public void goToLogin(View view) {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
-
-
     }
 
     @Override
@@ -83,9 +73,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         ReadFromWristbandTask readTask = new ReadFromWristbandTask();
         readTask.execute(urlWristbandData);
-
-
-
     }
 
     public void SendDataToDBButtonPressed(View view) {
@@ -100,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class ReadFromWristbandTask extends ReadHttpTask {
-        //TODO add url string to arguments, so that it can be called
         @Override
         protected void onPostExecute(CharSequence jsonString) {
             Log.d(MINE, "onPostExecute: called");
@@ -117,10 +103,6 @@ public class MainActivity extends AppCompatActivity {
                 temperature = jsonObject.getDouble("temperature");
                 humidity = jsonObject.getInt("humidity");
 
-
-
-                dataToSend = new Data(deviceId, co2, o3, humidity, pm25, pm10, pressure, temperature);
-
                 getLatLongMethod();
 
             } catch (JSONException ex) {
@@ -131,12 +113,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void postDataToDb() {
-
-        //Tried doing it with GSON, but it makes the combinedData into a string "Data" and then the rest of the class gets called correctly
         String userId = "patr";
         int noise = 2;
 
         //combinedDataNew = new CombinedSendData(deviceId, co2, o3, humidity, pm25, pm10, pressure, temperature, new Date().getTime(), latitude, longitude, noise, userId);
+
         //Converts object to json with gson
         Gson gson = new Gson();
         Log.d(MINE, "postDataToDb: " + combinedDataNewTestPurpose.toString());
