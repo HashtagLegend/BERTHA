@@ -1,53 +1,73 @@
 package com.example.bertha;
 
+import android.Manifest;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.bertha.Model.CombinedSendData;
 import com.example.bertha.Model.Data;
+import com.example.bertha.Model.SendData;
 import com.example.bertha.REST.PostHttpTask;
 import com.example.bertha.REST.ReadHttpTask;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.io.IOException;
-import java.util.List;
+import java.lang.reflect.Type;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String MINE = "MINE";
     public static final String urlWristbandData = "https://berthawristbandrestprovider.azurewebsites.net/api/wristbanddata/";
-    public static final String URLBooks = "http://anbo-restserviceproviderbooks.azurewebsites.net/Service1.svc/books";
-    private Button getDataButton;
+    public static final String postToDbUrl = "https://berthabackendrestprovider.azurewebsites.net/api/data/patr/";
+    Button getDataButton;
     private TextView mainMessageTv;
+
+
+    private Data dataToSend;
+    private Data data2;
+    private SendData combinedData;
+    private CombinedSendData combinedDataNew, combinedDataNewTestPurpose;
+
+    private int deviceId;
+    private double pm25;
+    private double pm10;
+    private int co2;
+    private int o3;
+    private double pressure;
+    private double temperature;
+    private int humidity;
+    private double latitude;
+    private double longitude;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getDataButton = findViewById(R.id.btnMainGetData);
-
         mainMessageTv = findViewById(R.id.mainMessageTv);
 
-
-
+        //Testdata: used as long as tablet wont recieve data do to SSL error:
+        //TODO Uncomment this as well
+        // getLatLongMethod();
+        combinedDataNewTestPurpose = new CombinedSendData(1616384779, 10, 10, 10, 25, 10, 10, 10, new Date().getTime(), latitude, longitude, 2, "patr");
 
     }
 
@@ -63,59 +83,108 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         ReadFromWristbandTask readTask = new ReadFromWristbandTask();
         readTask.execute(urlWristbandData);
+
+
+
+    }
+
+    public void SendDataToDBButtonPressed(View view) {
+        //ReadFromWristbandTask getData = new ReadFromWristbandTask();
+        //getData.execute(urlWristbandData);
+        Log.d(MINE, "SendDataToDBButtonPressed: now we wait 5 secs");
+        //TODO optimize this handler
+        // (new Handler()).postDelayed(this::postDataToDb, 5000);
+        postDataToDb();
+        Log.d(MINE, "SendDataToDB: pressed");
+        Log.d(MINE, "latlong data: " + latitude + longitude);
     }
 
     private class ReadFromWristbandTask extends ReadHttpTask {
+        //TODO add url string to arguments, so that it can be called
         @Override
         protected void onPostExecute(CharSequence jsonString) {
             Log.d(MINE, "onPostExecute: called");
 
-            //---------------GSON Builder, not able to split string
-            /*
-            Gson gson = new GsonBuilder().create();
-
-            final Data data = gson.fromJson(jsonString.toString(), Data.class);
-            */
-
-            try{
+            try {
                 JSONObject jsonObject = new JSONObject(jsonString.toString());
 
-                int deviceId = jsonObject.getInt("deviceId");
-                double pm25 = jsonObject.getDouble("pm25");
-                double pm10 = jsonObject.getDouble("pm10");
-                int co2 = jsonObject.getInt("co2");
-                int o3 = jsonObject.getInt("o3");
-                double pressure = jsonObject.getDouble("pressure");
-                double temperature = jsonObject.getDouble("temperature");
-                int humidity = jsonObject.getInt("humidity");
+                deviceId = jsonObject.getInt("deviceId");
+                pm25 = jsonObject.getDouble("pm25");
+                pm10 = jsonObject.getDouble("pm10");
+                co2 = jsonObject.getInt("co2");
+                o3 = jsonObject.getInt("o3");
+                pressure = jsonObject.getDouble("pressure");
+                temperature = jsonObject.getDouble("temperature");
+                humidity = jsonObject.getInt("humidity");
 
-                final Data data = new Data(deviceId, co2, o3, humidity, pm25, pm10, pressure, temperature);
 
-                Log.d(MINE, "onPostExecute: " + data.toString());
-                TextView text = findViewById(R.id.mainDataTv);
-                text.setText(data.toString());
 
-            } catch (JSONException ex){
+                dataToSend = new Data(deviceId, co2, o3, humidity, pm25, pm10, pressure, temperature);
+
+                getLatLongMethod();
+
+            } catch (JSONException ex) {
                 mainMessageTv.setText(ex.getMessage());
-                Log.d(MINE, "onPostExecute: " + ex.getMessage());
+                Log.d(MINE, "ReadFromWristBandTask" + ex.getMessage());
             }
         }
     }
 
-    public void postDataToDb(){
-        try{
-            JSONObject jsonObject = new JSONObject();
-            //ToDo create json object
+    public void postDataToDb() {
+
+        //Tried doing it with GSON, but it makes the combinedData into a string "Data" and then the rest of the class gets called correctly
+        String userId = "patr";
+        int noise = 2;
+
+        //combinedDataNew = new CombinedSendData(deviceId, co2, o3, humidity, pm25, pm10, pressure, temperature, new Date().getTime(), latitude, longitude, noise, userId);
+        //Converts object to json with gson
+        Gson gson = new Gson();
+        Log.d(MINE, "postDataToDb: " + combinedDataNewTestPurpose.toString());
+        String jsonDoc = gson.toJson(combinedDataNewTestPurpose);
+        PostHttpTask task = new PostHttpTask();
+        task.execute(postToDbUrl, jsonDoc);
+        Log.d(MINE, "postDataToDb: " + jsonDoc);
+    }
 
 
-
-            Log.d(MINE, "onPostExecute: ");
-
-
-        } catch (JSONException ex){
-            mainMessageTv.setText(ex.getMessage());
-            Log.d(MINE, "postDataToDb: " + ex.getMessage());
+    public void getLatLongMethod() {
+        LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
         }
+        Location location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        showLocation(location);
+        //TODO uncomment theese
+        //longitude = location.getLongitude();
+        //latitude = location.getLatitude();
+
+        Log.d(MINE, "longitude:" + longitude +" latitude: " + latitude);
+    }
+
+    private void showLocation(Location location){
+        if(location == null){
+            Toast.makeText(this, "Location is null", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+    }
+
+    public void doEvery10Seconds(){
+        while(true){
+            (new Handler()).postDelayed(this::write1, 5000);
+        }
+
+    }
+
+    public void write1(){
+        Log.d(MINE, "write: waited 5 seconds");
     }
 
 

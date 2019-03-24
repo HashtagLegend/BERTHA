@@ -1,6 +1,8 @@
 package com.example.bertha.Model;
 
-public class Data {
+import java.io.Serializable;
+
+public class Data implements Serializable {
 
 
     private int deviceId, co2, o3,  humidity;

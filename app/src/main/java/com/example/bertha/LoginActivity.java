@@ -91,6 +91,7 @@ public class LoginActivity extends AppCompatActivity {
             public void navigateOnLogin(){
                 Intent intent = new Intent(getBaseContext(), MainActivity.class);
                 startActivity(intent);
+                Log.d("MINE", "navigateOnLogin: Logged in");
             }
         });
     }

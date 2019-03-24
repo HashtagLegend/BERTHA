@@ -2,6 +2,7 @@ package com.example.bertha.REST;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,6 +30,8 @@ public class PostHttpTask extends AsyncTask<String, Void, CharSequence> {
             connection.setRequestProperty("Accept", "application/json");
             OutputStreamWriter osw = new OutputStreamWriter(connection.getOutputStream());
             osw.write(jsonDocument);
+            Log.d("MINE", "doInBackground: postmethod " + jsonDocument);
+            Log.d("MINE", "doInBackground: response " + connection.getResponseCode() + " " + connection.getResponseMessage() );
             osw.flush();
             osw.close();
 
@@ -46,14 +49,31 @@ public class PostHttpTask extends AsyncTask<String, Void, CharSequence> {
         } catch (MalformedURLException ex) {
             cancel(true);
             String message = ex.getMessage() + " " + urlString;
-            Log.e("BOOK", message);
+            Log.e("MINE", "MalformedURL "+  message);
 
             return message;
 
         } catch (IOException ex) {
             cancel(true);
-            Log.e("BOOK", ex.getMessage());
+            Log.e("MINE", "exception " +  ex.getMessage());
             return ex.getMessage();
         }
+
     }
+
+    @Override
+    protected void onPostExecute(CharSequence charSequence) {
+        super.onPostExecute(charSequence);
+        Log.d("MINE", "onPostExecutePostHTTP " + charSequence.toString());
+
+    }
+
+    @Override
+    protected void onCancelled(CharSequence charSequence) {
+        super.onCancelled(charSequence);
+        Log.d("MINE", "onPostExecuteCancelled " + charSequence.toString());
+
+    }
+
+
 }

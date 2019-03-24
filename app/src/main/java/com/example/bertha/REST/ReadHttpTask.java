@@ -3,6 +3,8 @@ package com.example.bertha.REST;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 
@@ -11,6 +13,7 @@ public class ReadHttpTask extends AsyncTask<String, Void, CharSequence> {
     protected CharSequence doInBackground(String... urls) {
         Log.d("MINE", "doInBackground: got here");
         String urlString = urls[0];
+
         try {
             CharSequence result = HttpHelper.GetHttpResponse(urlString);
             return result;
