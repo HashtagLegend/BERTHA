@@ -1,4 +1,4 @@
-package com.example.bertha;
+package com.example.bertha.Activities;
 
 import android.Manifest;
 import android.content.Intent;
@@ -16,8 +16,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.bertha.Model.CombinedSendData;
+import com.example.bertha.R;
 import com.example.bertha.REST.PostHttpTask;
 import com.example.bertha.REST.ReadHttpTask;
+import com.example.bertha.SendDataToDb;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -86,8 +88,8 @@ public class MainActivity extends AppCompatActivity {
         Log.d(MINE, "latlong data: " + latitude + longitude);
     }
 
-    public void goToSendDataActivity(View view) {
-        Intent intent = new Intent(this, SendDataToDb.class);
+    public void goToSendShowAll(View view) {
+        Intent intent = new Intent(this, ShowAllDataActivity.class);
         startActivity(intent);
     }
 

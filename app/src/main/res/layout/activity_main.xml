@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".Activities.MainActivity">
 
     <TextView
         android:id="@+id/mainDataTv"
@@ -37,8 +37,8 @@
         android:layout_height="wrap_content" />
 
     <Button
-        android:onClick="goToSendDataActivity"
-        android:text="Go to send data"
+        android:onClick="goToSendShowAll"
+        android:text="Go to show all"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

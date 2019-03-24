@@ -18,6 +18,7 @@ import java.util.Date;
 
 public class SendDataToDb extends AppCompatActivity {
 
+    //Todo: Keep this class in case you need to use jsonObject format instead of GSON
     public static final String MINE = "MINE";
     public static final String urlWristbandData = "https://berthawristbandrestprovider.azurewebsites.net/api/wristbanddata/";
     public static final String postToDbUrl = "https://berthabackendrestprovider.azurewebsites.net/api/data/";

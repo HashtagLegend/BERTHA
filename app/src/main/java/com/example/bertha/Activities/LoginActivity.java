@@ -1,6 +1,5 @@
-package com.example.bertha;
+package com.example.bertha.Activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.bertha.Model.User;
+import com.example.bertha.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
