@@ -55,7 +55,7 @@ public class SendDataToDb extends AppCompatActivity {
     }
 
     public void sendData(View view) {
-
+        sendData();
     }
 
     public void goBackButton(View view) {
@@ -83,6 +83,8 @@ public class SendDataToDb extends AppCompatActivity {
                 utc = new Date().getTime();
                 noise = 5;
                 userId = "patr2";
+
+                Log.d(MINE, "generateInputData " + jsonObject.toString());
             } catch (JSONException ex) {
                 Log.d(MINE, "generateInputData" + ex.getMessage());
             }
