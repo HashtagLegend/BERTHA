@@ -116,10 +116,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void StartSendLoop(View view) {
         doEvery10Seconds();
+        Toast.makeText(this, "Startet", Toast.LENGTH_LONG).show();
     }
 
     public void stopSendLoop(View view) {
         timer.cancel();
+        Toast.makeText(this, "Stoppet", Toast.LENGTH_SHORT).show() ;
     }
 
     private class ReadFromWristbandTask extends ReadHttpTask {

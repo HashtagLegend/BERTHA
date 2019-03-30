@@ -32,7 +32,6 @@ public class ShowAllDataActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_all_data);
-
         listHeader = new TextView(this);
         listHeader.setTextAppearance(this, android.R.style.TextAppearance_Large);
         listView = findViewById(R.id.showAllDataListView);
