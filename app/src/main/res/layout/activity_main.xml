@@ -5,7 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    android:id="@+id/mainActivityLayout"
+    tools:context=".Activities.MainActivity">
+
+    <include
+        layout="@layout/toolbar_layout"/>
 
     <TextView
         android:id="@+id/mainDataTv"
@@ -13,22 +17,36 @@
         android:layout_height="wrap_content"></TextView>
 
     <Button
-        android:text="Logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@color/mapbox_blue"
         android:onClick="goToLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:text="Logout" />
 
     <Button
-        android:text="Get data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@android:color/holo_green_light"
         android:onClick="StartSendLoop"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:text="Start" />
 
     <Button
-        android:text="Go To Show All"
-        android:onClick="GoToShowAllData"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@android:color/holo_red_dark"
+        android:onClick="stopSendLoop"
+        android:text="Stop" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@color/mapbox_blue"
+        android:onClick="GoToShowAllData"
+        android:text="Go To Show All" />
 
     <TextView
         android:id="@+id/mainMessageTv"

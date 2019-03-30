@@ -1,12 +1,14 @@
 package com.example.bertha.Activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -19,6 +21,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
+
+    //Preferences
+    public static final String PREF_FILE_NAME = "pref_file_name";
+    public static final String USER_NAME = "user_name";
+    public static final String PASSWORD = "password";
+
+    private CheckBox checkBox;
+    private SharedPreferences prefs;
 
     //Firebase
     FirebaseDatabase database;
@@ -41,12 +51,28 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        sndUsername = (EditText) findViewById(R.id.sendUserName);
+        sndPassword = (EditText) findViewById(R.id.sendPassword);
+
+        //Preferences
+        prefs = getSharedPreferences(PREF_FILE_NAME, MODE_PRIVATE);
+
+        checkBox = (CheckBox)findViewById(R.id.checkBox);
+        String usernamePrefs = prefs.getString(USER_NAME,null);
+        String passwordPrefs = prefs.getString(PASSWORD,null);
+
+        if(usernamePrefs != null && passwordPrefs != null){
+            sndUsername.setText(usernamePrefs);
+            sndPassword.setText(passwordPrefs);
+            checkBox.setChecked(true);
+        }
+
+
         //Firebase
         database = FirebaseDatabase.getInstance();
         users = database.getReference("Users");
 
-        sndUsername = (EditText) findViewById(R.id.sendUserName);
-        sndPassword = (EditText) findViewById(R.id.sendPassword);
+
 
         btnLogin = (Button) findViewById(R.id.btnLogin);
 
@@ -57,8 +83,6 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d("MINE", "onClick: Clicked");
             }
         });
-
-
     }
 
     private void signIn(final String username, final String password) {
@@ -72,6 +96,8 @@ public class LoginActivity extends AppCompatActivity {
                         if(login.getPassword().equals(password)){
                             Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_LONG).show();
                             navigateOnLogin();
+                            savePrefs(username, password);
+                            Log.d("MINE", "login succes");
                         }
                         else{
                             Toast.makeText(LoginActivity.this, "Password is incorrect!", Toast.LENGTH_LONG).show();
@@ -94,6 +120,22 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d("MINE", "navigateOnLogin: Logged in");
             }
         });
+    }
+
+    //Preferences
+    public void savePrefs(String username,String password){
+        SharedPreferences.Editor editor = prefs.edit();
+        if(checkBox.isChecked()){
+            editor.putString(USER_NAME,username);
+            editor.putString(PASSWORD,password);
+        }
+
+        else{
+            editor.remove(USER_NAME);
+            editor.remove(PASSWORD);
+        }
+
+        editor.apply();
     }
 
 

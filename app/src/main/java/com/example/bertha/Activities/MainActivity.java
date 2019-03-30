@@ -1,6 +1,7 @@
 package com.example.bertha.Activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -9,12 +10,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.bertha.HelperClasses.OnSwipeTouchListener;
 import com.example.bertha.Model.CombinedSendData;
 import com.example.bertha.R;
 import com.example.bertha.REST.PostHttpTask;
@@ -26,13 +30,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
+
+    //Toolbar
+    private Toolbar toolbar;
 
     public static final String MINE = "MINE";
     public static final String urlWristbandData = "https://berthawristbandrestprovider.azurewebsites.net/api/wristbanddata/";
     public static final String postToDbUrl = "https://berthabackendrestprovider.azurewebsites.net/api/data/";
-    Button getDataButton;
     private TextView mainMessageTv;
 
     private CombinedSendData combinedDataNew, combinedDataNewTestPurpose;
@@ -47,22 +55,47 @@ public class MainActivity extends AppCompatActivity {
     private int humidity;
     private double latitude;
     private double longitude;
+    private Timer timer;
 
+    private LinearLayout layout;
 
-
-
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mainMessageTv = findViewById(R.id.mainMessageTv);
 
-        //Testdata: used as long as tablet wont recieve data due to SSL error:
-        //TODO Uncomment this as well
-        // getLatLongMethod();
-        combinedDataNewTestPurpose = new CombinedSendData(1616384779, 10, 10, 10, 25, 10, 10, 10, new Date().getTime(), latitude, longitude, 2, "patr");
+        //Timer
+        timer = new Timer();
+
+        //Toolbar
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        mainMessageTv = findViewById(R.id.mainMessageTv);
+        layout = findViewById(R.id.mainActivityLayout);
+
+
+        layout.setOnTouchListener(new OnSwipeTouchListener(MainActivity.this) {
+            public void onSwipeTop() {
+                Toast.makeText(MainActivity.this, "top", Toast.LENGTH_SHORT).show();
+            }
+
+            public void onSwipeRight() {
+                Toast.makeText(MainActivity.this, "right", Toast.LENGTH_SHORT).show();
+            }
+
+            public void onSwipeLeft() {
+                Toast.makeText(MainActivity.this, "left", Toast.LENGTH_SHORT).show();
+            }
+
+            public void onSwipeBottom() {
+                Toast.makeText(MainActivity.this, "bottom", Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
+
 
     public void goToLogin(View view) {
         Intent intent = new Intent(this, LoginActivity.class);
@@ -72,30 +105,27 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ReadFromWristbandTask readTask = new ReadFromWristbandTask();
-        readTask.execute(urlWristbandData);
-    }
-
-    public void SendDataToDBButtonPressed(View view) {
-        //ReadFromWristbandTask getData = new ReadFromWristbandTask();
-        //getData.execute(urlWristbandData);
-        Log.d(MINE, "SendDataToDBButtonPressed: now we wait 5 secs");
-        //TODO optimize this handler
-        // (new Handler()).postDelayed(this::postDataToDb, 5000);
-        postDataToDb();
-        Log.d(MINE, "SendDataToDB: pressed");
-        Log.d(MINE, "latlong data: " + latitude + longitude);
     }
 
     public void GoToShowAllData(View view) {
         Intent intent = new Intent(this, ShowAllDataActivity.class);
         startActivity(intent);
+        Log.d(MINE, "GoToShowAllData: ");
+
+    }
+
+    public void StartSendLoop(View view) {
+        doEvery10Seconds();
+    }
+
+    public void stopSendLoop(View view) {
+        timer.cancel();
     }
 
     private class ReadFromWristbandTask extends ReadHttpTask {
         @Override
         protected void onPostExecute(CharSequence jsonString) {
-            Log.d(MINE, "onPostExecute: called");
+            Log.d(MINE, "Read from wristband: called");
 
             try {
                 JSONObject jsonObject = new JSONObject(jsonString.toString());
@@ -111,6 +141,8 @@ public class MainActivity extends AppCompatActivity {
 
                 getLatLongMethod();
 
+                Log.d(MINE, "Retrieved data: success");
+
             } catch (JSONException ex) {
                 mainMessageTv.setText(ex.getMessage());
                 Log.d(MINE, "ReadFromWristBandTask" + ex.getMessage());
@@ -119,15 +151,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void postDataToDb() {
-        String userId = "patr";
+        String userId = "pady";
         int noise = 2;
 
-        //combinedDataNew = new CombinedSendData(deviceId, co2, o3, humidity, pm25, pm10, pressure, temperature, new Date().getTime(), latitude, longitude, noise, userId);
-
+        combinedDataNew = new CombinedSendData(deviceId, co2, o3, humidity, pm25, pm10, pressure, temperature, new Date().getTime(), latitude, longitude, noise, userId);
+        //if you are using the emulator, please change object to testobject from onCreate
         //Converts object to json with gson
         Gson gson = new Gson();
-        Log.d(MINE, "postDataToDb: " + combinedDataNewTestPurpose.toString());
-        String jsonDoc = gson.toJson(combinedDataNewTestPurpose);
+        Log.d(MINE, "postDataToDb: " + combinedDataNew.toString());
+        String jsonDoc = gson.toJson(combinedDataNew);
         PostHttpTask task = new PostHttpTask();
         task.execute(postToDbUrl, jsonDoc);
         Log.d(MINE, "postDataToDb: " + jsonDoc);
@@ -135,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void getLatLongMethod() {
+        Log.d(MINE, "getLatLongMethod: called");
         LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -146,13 +179,13 @@ public class MainActivity extends AppCompatActivity {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        Location location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         showLocation(location);
         //TODO uncomment theese
-        //longitude = location.getLongitude();
-        //latitude = location.getLatitude();
+        longitude = location.getLongitude();
+        latitude = location.getLatitude();
 
-        Log.d(MINE, "longitude:" + longitude +" latitude: " + latitude);
+        Log.d(MINE, "Location found: Longitude: " + longitude +" latitude: " + latitude);
     }
 
     private void showLocation(Location location){
@@ -163,17 +196,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     public void doEvery10Seconds(){
-        while(true){
-            (new Handler()).postDelayed(this::write1, 5000);
-        }
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                ReadFromWristbandTask getData = new ReadFromWristbandTask();
+                getData.execute(urlWristbandData);
+                postDataToDb();
+            }
+        },0, 10000);
 
     }
-
-    public void write1(){
-        Log.d(MINE, "write: waited 5 seconds");
-    }
-
-
-
 }
