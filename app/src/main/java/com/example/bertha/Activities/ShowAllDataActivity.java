@@ -1,15 +1,16 @@
 package com.example.bertha.Activities;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.bertha.Adapters.DataListItemAdapter;
 import com.example.bertha.HelperClasses.OnSwipeTouchListener;
@@ -18,14 +19,18 @@ import com.example.bertha.R;
 import com.example.bertha.REST.ReadHttpTask;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.maps.MapView;
 
 public class ShowAllDataActivity extends AppCompatActivity {
 
     private int counter;
     private ListView listView;
     private TextView listHeader;
+
+    //Toolbar
+    private Toolbar toolbar;
+
+
+
 
     public static final String getAllDataUrl = "https://berthabackendrestprovider.azurewebsites.net/api/data/pady/";
     @Override
@@ -35,8 +40,11 @@ public class ShowAllDataActivity extends AppCompatActivity {
         listHeader = new TextView(this);
         listHeader.setTextAppearance(this, android.R.style.TextAppearance_Large);
         listView = findViewById(R.id.showAllDataListView);
-
+        //Toolbar
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         listView.addHeaderView(listHeader);
+
 
         listView.setOnTouchListener(new OnSwipeTouchListener(ShowAllDataActivity.this) {
             public void onSwipeTop() {
@@ -64,10 +72,36 @@ public class ShowAllDataActivity extends AppCompatActivity {
         super.onResume();
         ReadAllDataTask dataTask = new ReadAllDataTask();
         dataTask.execute(getAllDataUrl);
-
-
-
     }
+
+    //Toolbar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+
+        if (id == R.id.actionBarUserSettings) {
+            Intent intent = new Intent(this, UserSettings.class);
+            startActivity(intent);
+        }
+        else if(id == R.id.actionBarLogOut){
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        }
+        else if(id == R.id.actionBarSettings){
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
 
     private class ReadAllDataTask extends ReadHttpTask {
         @Override

@@ -9,20 +9,13 @@
     tools:context=".Activities.MainActivity">
 
     <include
+        android:id="@+id/toolbar"
         layout="@layout/toolbar_layout"/>
 
     <TextView
         android:id="@+id/mainDataTv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"></TextView>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="@color/mapbox_blue"
-        android:onClick="goToLogin"
-        android:text="Logout" />
 
     <Button
         android:layout_width="match_parent"

@@ -15,7 +15,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.DataActivity"></activity>
+        <activity android:name=".Activities.UserSettings"></activity>
+        <activity android:name=".Activities.ForgotPasswordActivity" />
+        <activity android:name=".Activities.DataActivity" />
         <activity android:name=".Activities.ShowAllDataActivity" />
         <activity android:name=".SendDataToDb" />
         <activity android:name=".Activities.LoginActivity">

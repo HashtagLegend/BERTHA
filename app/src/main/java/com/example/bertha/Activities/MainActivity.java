@@ -8,13 +8,18 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PersistableBundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ShareActionProvider;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,12 +43,16 @@ public class MainActivity extends AppCompatActivity {
     //Toolbar
     private Toolbar toolbar;
 
+    //Logging
     public static final String MINE = "MINE";
+
+    //HTTP
     public static final String urlWristbandData = "https://berthawristbandrestprovider.azurewebsites.net/api/wristbanddata/";
     public static final String postToDbUrl = "https://berthabackendrestprovider.azurewebsites.net/api/data/";
+
     private TextView mainMessageTv;
 
-    private CombinedSendData combinedDataNew, combinedDataNewTestPurpose;
+    private CombinedSendData combinedDataNew;
 
     private int deviceId;
     private double pm25;
@@ -63,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //String myString = savedInstanceState.getString("MyString")
+
         setContentView(R.layout.activity_main);
 
         //Timer
@@ -75,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         mainMessageTv = findViewById(R.id.mainMessageTv);
         layout = findViewById(R.id.mainActivityLayout);
 
-
+        //Swipe
         layout.setOnTouchListener(new OnSwipeTouchListener(MainActivity.this) {
             public void onSwipeTop() {
                 Toast.makeText(MainActivity.this, "top", Toast.LENGTH_SHORT).show();
@@ -96,10 +108,37 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        //outState.putString("MyString", "Denne string bliver gemt")
+    }
 
-    public void goToLogin(View view) {
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
+    //Toolbar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+
+        if (id == R.id.actionBarUserSettings) {
+            Intent intent = new Intent(this, UserSettings.class);
+            startActivity(intent);
+        }
+        else if(id == R.id.actionBarLogOut){
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        }
+        else if(id == R.id.actionBarSettings){
+
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

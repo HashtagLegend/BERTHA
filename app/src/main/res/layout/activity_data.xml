@@ -7,6 +7,10 @@
     android:orientation="vertical"
     tools:context=".Activities.DataActivity">
 
+    <include
+        android:id="@+id/dataActivityToolbar"
+        layout="@layout/toolbar_layout"/>
+
     <TextView
         android:id="@+id/DataHeaderTV"
         android:layout_width="match_parent"

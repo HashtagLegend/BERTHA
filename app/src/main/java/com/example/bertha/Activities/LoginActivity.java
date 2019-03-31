@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.bertha.Model.User;
@@ -34,14 +35,16 @@ public class LoginActivity extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference users;
 
-    Button btnLogin, btnGoToRegisterUser;
+    TextView btnGoToRegisterUser, goToResetPassword;
+    Button btnLogin;
     EditText sndUsername, sndPassword;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        btnGoToRegisterUser = (Button) findViewById(R.id.btnGoToRegisterUser);
+        btnGoToRegisterUser = (TextView) findViewById(R.id.btnGoToRegisterUser);
+        goToResetPassword = (TextView) findViewById(R.id.goToResetPassword);
 
         btnGoToRegisterUser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,6 +53,16 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        goToResetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ForgotPasswordActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
 
         sndUsername = (EditText) findViewById(R.id.sendUserName);
         sndPassword = (EditText) findViewById(R.id.sendPassword);
